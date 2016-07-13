@@ -1,56 +1,52 @@
 package com.xzvfi.myheart;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.ListView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.xzvfi.myheart.view.StrangerListViewAdapter;
 
+/**
+ * Created by xzvfi on 2016-07-12.
+ */
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
-
-    public static int count = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final TextView mTextView = (TextView) findViewById(R.id.text);
+        ListView listview ;
+        StrangerListViewAdapter adapter;
 
-        final RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://172.16.101.69:3000/";
+        adapter = new StrangerListViewAdapter() ;
 
-        final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        mTextView.setText("Response is: " + response);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mTextView.setText("That didn't work! " + error.toString());
+        listview = (ListView) findViewById(R.id.stranger_list_view);
+        listview.setAdapter(adapter);
 
-            }
-        });
+        final int[] ids = {
+                R.drawable.jung_yeon,
+                R.drawable.se_jeong,
+                R.drawable.seo_hyun,
+                R.drawable.seong_gyung,
+                R.drawable.so_dam,
+                R.drawable.soo_min,
+                R.drawable.tzu_yu
+        };
 
-        final Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                queue.add(stringRequest);
-                Log.i(TAG, "clicked");
-            }
-        });
+        final String[] names = {
+                "이정연",
+                "김세정",
+                "서현진",
+                "이성경",
+                "박소담",
+                "이수민",
+                "쯔위"
+        };
+
+        for (int i=0; i<ids.length; ++i) {
+            adapter.addItem(ContextCompat.getDrawable(this, ids[i]),
+                    names[i], "Assignment Ind Black 36dp") ;
+        }
     }
 }
