@@ -1,10 +1,11 @@
-package com.xzvfi.myheart;
+package com.xzvfi.myheart.activity;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
+import com.xzvfi.myheart.R;
 import com.xzvfi.myheart.view.StrangerListViewAdapter;
 
 /**
