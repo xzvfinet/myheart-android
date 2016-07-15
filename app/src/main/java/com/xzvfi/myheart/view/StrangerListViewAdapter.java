@@ -48,7 +48,7 @@ public class StrangerListViewAdapter extends BaseAdapter {
         }
 
         ImageView faceImageView = (ImageView) convertView.findViewById(R.id.faceImageView) ;
-        TextView nameTextView = (TextView) convertView.findViewById(R.id.nameTextView) ;
+        TextView nameTextView = (TextView) convertView.findViewById(R.id.userNameTextView) ;
         TextView descTextView = (TextView) convertView.findViewById(R.id.descriptionTextView);
 
         StrangerListItem listViewItem = itemList.get(position);
