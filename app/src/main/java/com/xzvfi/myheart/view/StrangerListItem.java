@@ -6,9 +6,18 @@ import android.graphics.drawable.Drawable;
  * Created by xzvfi on 2016-07-13.
  */
 public class StrangerListItem {
+    private String id;
     private Drawable faceDrawable;
     private String name;
     private String description;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Drawable getFaceDrawable() {
         return faceDrawable;

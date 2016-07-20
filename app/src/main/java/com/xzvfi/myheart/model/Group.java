@@ -4,31 +4,47 @@ package com.xzvfi.myheart.model;
  * Created by xzvfi on 2016-07-15.
  */
 public class Group {
-    private String name;
-    private int user_num;
-    private boolean activated;
+    private int id;
+    private String group_name;
+    private int group_user_num;
+    private boolean group_activated;
+
+    public Group(int id, String group_name, int group_user_num) {
+        this.id = id;
+        this.group_name = group_name;
+        this.group_user_num = group_user_num;
+        this.group_activated = true;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
-        return name;
+        return group_name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.group_name = name;
     }
 
-    public int getUser_num() {
-        return user_num;
+    public int getUserNum() {
+        return group_user_num;
     }
 
-    public void setUser_num(int user_num) {
-        this.user_num = user_num;
+    public void setUserNum(int user_num) {
+        this.group_user_num = user_num;
     }
 
-    public boolean isActivated() {
-        return activated;
+    public boolean isGroupActivated() {
+        return group_activated;
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void setGroupActivated(boolean group_activated) {
+        this.group_activated = group_activated;
     }
 }

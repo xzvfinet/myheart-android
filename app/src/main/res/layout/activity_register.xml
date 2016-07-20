@@ -12,7 +12,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:weightSum="1">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -59,6 +60,35 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true" />
         </RelativeLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/profileImageView"
+            android:src="@drawable/abc_ic_menu_selectall_mtrl_alpha"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="갤러리"
+                android:id="@+id/galleryButton"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="사진찍기"
+                android:id="@+id/pictureButton"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
 
         <Button
             android:layout_width="wrap_content"

@@ -18,6 +18,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.xzvfi.myheart.R;
 import com.xzvfi.myheart.Singleton;
+import com.xzvfi.myheart.model.User;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +28,6 @@ public class AuthActivity extends AppCompatActivity {
     private final String TAG = "AuthActivity";
 
     private CallbackManager callbackManager;
-    private Intent registerIntent;
 
     private TextView mTextView;
 
@@ -35,8 +35,29 @@ public class AuthActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (isLoggedIn()) {
-            moveToRegister();
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken != null) {
+            String token = accessToken.getToken();
+            Call<User> call = Singleton.getNetworkService().getUser(token);
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.isSuccessful()) {
+                        // 기존 유저
+                        Toast.makeText(getApplicationContext(), "기존 유저", Toast.LENGTH_SHORT).show();
+                        moveToMain(response.body());
+                    } else {
+                        // 새로운 유저
+                        moveToRegister();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    t.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "유저 정보 가져오기 실패".concat(t.toString()), Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 
@@ -48,36 +69,34 @@ public class AuthActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_auth);
 
-        registerIntent = new Intent(AuthActivity.this, RegisterActivity.class);
         mTextView = (TextView) findViewById(R.id.text);
 
-        Button button = (Button) findViewById(R.id.button);
-        if (button != null)
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Call<Boolean> call = Singleton.getNetworkService().isUserExist("merong");
-                call.enqueue(new Callback<Boolean>() {
-                    @Override
-                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                        if (response.body().booleanValue()) {
-                            // 새로운 유저
-                            moveToRegister();
-                        }
-                        else {
-                            // 기존 유저
-                            Toast.makeText(getApplicationContext(), "기존 유저", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Boolean> call, Throwable t) {
-                        t.printStackTrace();
-                        Toast.makeText(getApplicationContext(), "실패: ".concat(t.toString()), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
+//        Button button = (Button) findViewById(R.id.button);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Call<User> call = Singleton.getNetworkService().getUser(AccessToken.getCurrentAccessToken().getToken());
+//                call.enqueue(new Callback<User>() {
+//                    @Override
+//                    public void onResponse(Call<User> call, Response<User> response) {
+//                        if (response.body() != null) {
+//                            // 기존 유저
+//                            Toast.makeText(getApplicationContext(), "기존 유저", Toast.LENGTH_SHORT).show();
+//                            moveToMain(response.body());
+//                        } else {
+//                            // 새로운 유저
+//                            moveToRegister();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<User> call, Throwable t) {
+//                        t.printStackTrace();
+//                        Toast.makeText(getApplicationContext(), "유저 정보 가져오기 실패".concat(t.toString()), Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }
+//        });
 
         // login button
         final LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -98,14 +117,18 @@ public class AuthActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
     }
 
-    private boolean isLoggedIn() {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        return accessToken != null;
-    }
-
     private void moveToRegister() {
         Toast.makeText(this, "페이스북 인증 성공. 정보를 추가로 입력해주세요!", Toast.LENGTH_SHORT).show();
+        Intent registerIntent = new Intent(AuthActivity.this, RegisterActivity.class);
         startActivity(registerIntent);
+        finish();
+    }
+
+    private void moveToMain(User user) {
+        Toast.makeText(this, "기존 유저입니다. 오신 것을 환영합니다", Toast.LENGTH_LONG).show();
+        Intent mainIntent = new Intent(AuthActivity.this, MainActivity.class);
+        mainIntent.putExtra("user", user);
+        startActivity(mainIntent);
         finish();
     }
 
@@ -116,22 +139,22 @@ public class AuthActivity extends AppCompatActivity {
 
             String token = loginResult.getAccessToken().getToken();
 
-            Call<Boolean> call = Singleton.getNetworkService().isUserExist(token);
-            call.enqueue(new Callback<Boolean>() {
+            Call<User> call = Singleton.getNetworkService().getUser(token);
+            call.enqueue(new Callback<User>() {
                 @Override
-                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                    if (response.body().booleanValue()) {
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.body() != null) {
                         // 기존 유저
                         Toast.makeText(getApplicationContext(), "기존 유저", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                        moveToMain(response.body());
+                    } else {
                         // 새로운 유저
                         moveToRegister();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<Boolean> call, Throwable t) {
+                public void onFailure(Call<User> call, Throwable t) {
                     t.printStackTrace();
                     Toast.makeText(getApplicationContext(), "유저 정보 가져오기 실패".concat(t.toString()), Toast.LENGTH_LONG).show();
                 }

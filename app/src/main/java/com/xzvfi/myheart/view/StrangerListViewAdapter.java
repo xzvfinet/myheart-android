@@ -2,22 +2,34 @@ package com.xzvfi.myheart.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.xzvfi.myheart.R;
+import com.xzvfi.myheart.Singleton;
+import com.xzvfi.myheart.model.Heart;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by xzvfi on 2016-07-13.
  */
 public class StrangerListViewAdapter extends BaseAdapter {
-    private ArrayList<StrangerListItem> itemList = new ArrayList<StrangerListItem>() ;
+    private Context context;
+
+    private ArrayList<StrangerListItem> itemList = new ArrayList<StrangerListItem>();
 
     public StrangerListViewAdapter() {
     }
@@ -40,32 +52,62 @@ public class StrangerListViewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final int pos = position;
-        final Context context = parent.getContext();
+        this.context = parent.getContext();
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.stranger_list_item, parent, false);
         }
 
-        ImageView faceImageView = (ImageView) convertView.findViewById(R.id.faceImageView) ;
-        TextView nameTextView = (TextView) convertView.findViewById(R.id.userNameTextView) ;
+        ImageView faceImageView = (ImageView) convertView.findViewById(R.id.faceImageView);
+        TextView nameTextView = (TextView) convertView.findViewById(R.id.userNameTextView);
         TextView descTextView = (TextView) convertView.findViewById(R.id.descriptionTextView);
+        ImageButton heartButton = (ImageButton) convertView.findViewById(R.id.heartButton);
+        ImageButton friendButton = (ImageButton) convertView.findViewById(R.id.friendButton);
 
-        StrangerListItem listViewItem = itemList.get(position);
+        final StrangerListItem listViewItem = itemList.get(position);
 
         faceImageView.setImageDrawable(listViewItem.getFaceDrawable());
         nameTextView.setText(listViewItem.getName());
         descTextView.setText(listViewItem.getDescription());
+        heartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<Heart> sendHeartCall = Singleton.getNetworkService().sendHeart(
+                        new Heart(AccessToken.getCurrentAccessToken().getToken(),
+                                "1")
+                );
+
+                sendHeartCall.enqueue(new Callback<Heart>() {
+                    @Override
+                    public void onResponse(Call<Heart> call, Response<Heart> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(context, listViewItem.getName() + " 님에게 하트 보내기 성공!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "하트 보내기 실패 ㅠㅠ", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Heart> call, Throwable t) {
+                        t.printStackTrace();
+                        Toast.makeText(context, "디비 접속 및 하트 보내기 실패 ㅠㅠ", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
 
         return convertView;
     }
 
-    public void addItem(Drawable face, String name, String dexcription) {
+    public void addItem(String id, Drawable face, String name, String description) {
         StrangerListItem item = new StrangerListItem();
 
+        item.setId(id);
         item.setFaceDrawable(face);
         item.setName(name);
-        item.setDescription(dexcription);
+        item.setDescription(description);
 
         itemList.add(item);
     }
