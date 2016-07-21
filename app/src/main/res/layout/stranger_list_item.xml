@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="이름"
+                android:text="Name"
                 android:id="@+id/userNameTextView"
                 android:layout_gravity="center_horizontal"
                 android:layout_alignParentTop="true"
@@ -34,13 +34,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="설명"
+                android:text="Description"
                 android:id="@+id/descriptionTextView"
                 android:layout_below="@+id/userNameTextView"
                 android:layout_alignParentStart="true"
+                android:layout_above="@+id/linearLayout2" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout2"
                 android:layout_above="@+id/linearLayout"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp" />
+                android:layout_alignParentEnd="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="하트 수:  "
+                    android:id="@+id/textView"
+                    android:layout_above="@+id/linearLayout"
+                    android:layout_alignStart="@+id/descriptionTextView" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="123"
+                    android:id="@+id/heartNumTextView" />
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -72,6 +93,7 @@
                     android:background="#ffffff"
                     android:scaleType="fitXY" />
             </LinearLayout>
+
         </RelativeLayout>
     </LinearLayout>
 </FrameLayout>

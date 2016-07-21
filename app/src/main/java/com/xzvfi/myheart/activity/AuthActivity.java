@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -18,6 +15,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.xzvfi.myheart.R;
 import com.xzvfi.myheart.Singleton;
+import com.xzvfi.myheart.model.Group;
 import com.xzvfi.myheart.model.User;
 
 import retrofit2.Call;
@@ -29,36 +27,11 @@ public class AuthActivity extends AppCompatActivity {
 
     private CallbackManager callbackManager;
 
-    private TextView mTextView;
-
     @Override
     protected void onResume() {
         super.onResume();
-
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken != null) {
-            String token = accessToken.getToken();
-            Call<User> call = Singleton.getNetworkService().getUser(token);
-            call.enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    if (response.isSuccessful()) {
-                        // 기존 유저
-                        Toast.makeText(getApplicationContext(), "기존 유저", Toast.LENGTH_SHORT).show();
-                        moveToMain(response.body());
-                    } else {
-                        // 새로운 유저
-                        moveToRegister();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    t.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "유저 정보 가져오기 실패".concat(t.toString()), Toast.LENGTH_LONG).show();
-                }
-            });
-        }
+//        access(accessToken);
     }
 
     @Override
@@ -69,36 +42,6 @@ public class AuthActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_auth);
 
-        mTextView = (TextView) findViewById(R.id.text);
-
-//        Button button = (Button) findViewById(R.id.button);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Call<User> call = Singleton.getNetworkService().getUser(AccessToken.getCurrentAccessToken().getToken());
-//                call.enqueue(new Callback<User>() {
-//                    @Override
-//                    public void onResponse(Call<User> call, Response<User> response) {
-//                        if (response.body() != null) {
-//                            // 기존 유저
-//                            Toast.makeText(getApplicationContext(), "기존 유저", Toast.LENGTH_SHORT).show();
-//                            moveToMain(response.body());
-//                        } else {
-//                            // 새로운 유저
-//                            moveToRegister();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<User> call, Throwable t) {
-//                        t.printStackTrace();
-//                        Toast.makeText(getApplicationContext(), "유저 정보 가져오기 실패".concat(t.toString()), Toast.LENGTH_LONG).show();
-//                    }
-//                });
-//            }
-//        });
-
-        // login button
         final LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         if (loginButton != null) {
 //            loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_friends"));
@@ -118,16 +61,19 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void moveToRegister() {
-        Toast.makeText(this, "페이스북 인증 성공. 정보를 추가로 입력해주세요!", Toast.LENGTH_SHORT).show();
+        String token = AccessToken.getCurrentAccessToken().getToken();
+        Toast.makeText(this, "페이스북 인증 성공. 정보를 추가로 입력해주세요! " + token, Toast.LENGTH_SHORT).show();
         Intent registerIntent = new Intent(AuthActivity.this, RegisterActivity.class);
+        registerIntent.putExtra("token", token);
         startActivity(registerIntent);
         finish();
     }
 
-    private void moveToMain(User user) {
+    private void moveToMain(User user, Group group) {
         Toast.makeText(this, "기존 유저입니다. 오신 것을 환영합니다", Toast.LENGTH_LONG).show();
         Intent mainIntent = new Intent(AuthActivity.this, MainActivity.class);
         mainIntent.putExtra("user", user);
+        mainIntent.putExtra("group", group);
         startActivity(mainIntent);
         finish();
     }
@@ -135,30 +81,8 @@ public class AuthActivity extends AppCompatActivity {
     private FacebookCallback<LoginResult> loginResultFacebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(final LoginResult loginResult) {
-            Toast.makeText(getApplicationContext(), "페이스북 로그인 토큰을 받아오는데 성공했습니다. 서버로 보냅니다.", Toast.LENGTH_SHORT).show();
-
-            String token = loginResult.getAccessToken().getToken();
-
-            Call<User> call = Singleton.getNetworkService().getUser(token);
-            call.enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    if (response.body() != null) {
-                        // 기존 유저
-                        Toast.makeText(getApplicationContext(), "기존 유저", Toast.LENGTH_SHORT).show();
-                        moveToMain(response.body());
-                    } else {
-                        // 새로운 유저
-                        moveToRegister();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    t.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "유저 정보 가져오기 실패".concat(t.toString()), Toast.LENGTH_LONG).show();
-                }
-            });
+            Toast.makeText(AuthActivity.this, "User Id: " + loginResult.getAccessToken().getUserId(), Toast.LENGTH_SHORT).show();
+//            access(loginResult.getAccessToken());
         }
 
         @Override
@@ -172,4 +96,55 @@ public class AuthActivity extends AppCompatActivity {
             Log.e(TAG, error.toString());
         }
     };
+
+    private void access(AccessToken accessToken) {
+        if (accessToken == null) {
+            Toast.makeText(AuthActivity.this, "페이스북 로그인을 해주세요.", Toast.LENGTH_SHORT).show();
+        } else if (accessToken.isExpired()) {
+            Toast.makeText(AuthActivity.this, "Token 이 만료되었습니다. 재 인증 해주세요.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "페이스북 로그인 토큰을 받아오는데 성공했습니다. 서버로 보냅니다.", Toast.LENGTH_SHORT).show();
+
+            String token = accessToken.getToken();
+            Call<User> call = Singleton.getNetworkService().getUser(token);
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.isSuccessful()) {
+                        // 기존 유저
+                        final User user = response.body();
+                        Toast.makeText(getApplicationContext(), "기존 유저:" + user.getUserName(), Toast.LENGTH_SHORT).show();
+
+                        Call<Group> groupCall = Singleton.getNetworkService().getGroup(user.getUserGroup());
+                        groupCall.enqueue(new Callback<Group>() {
+                            @Override
+                            public void onResponse(Call<Group> call, Response<Group> response) {
+                                if (response.isSuccessful()) {
+                                    Group group = response.body();
+                                    moveToMain(user, group);
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "그룹 정보 가져오기 실패. 어플을 재시작해주세요!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Group> call, Throwable t) {
+                                t.printStackTrace();
+                                Toast.makeText(getApplicationContext(), "그룹 정보 가져오기 실패. 어플을 재시작해주세요!".concat(t.toString()), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        // 새로운 유저
+                        moveToRegister();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    t.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "유저 정보 가져오기 실패. 어플을 재시작해주세요!".concat(t.toString()), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
 }

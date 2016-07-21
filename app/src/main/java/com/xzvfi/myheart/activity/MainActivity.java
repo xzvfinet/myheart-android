@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.xzvfi.myheart.R;
 import com.xzvfi.myheart.Singleton;
+import com.xzvfi.myheart.model.Group;
 import com.xzvfi.myheart.model.User;
 import com.xzvfi.myheart.view.StrangerListViewAdapter;
 
@@ -38,22 +39,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent intent = getIntent();
+        Group group = (Group) intent.getSerializableExtra("group");
+
+        setTitle("같은 그룹(" + group.getName() + ") 친구 목록");
+
         ListView listview;
         final StrangerListViewAdapter adapter = new StrangerListViewAdapter();
         listview = (ListView) findViewById(R.id.stranger_list_view);
         listview.setAdapter(adapter);
 
-        Intent intent = getIntent();
-        User user = (User) intent.getSerializableExtra("user");
+        User registeredUser = (User) intent.getSerializableExtra("user");
 
-        Call<List<User>> userList = Singleton.getNetworkService().getUsers(user.getUserGroup());
+        Call<List<User>> userList = Singleton.getNetworkService().getUsers(registeredUser.getUserGroup());
         userList.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
-                    for (int i = 0; i < response.body().size(); ++i) {
-                        adapter.addItem(response.body().get(i).getToken(), ContextCompat.getDrawable(MainActivity.this, ids[1]),
-                                response.body().get(i).getUserName(), "Assignment Ind Black 36dp");
+                    for (User user : response.body()) {
+                        adapter.addItem(user.getToken(), ContextCompat.getDrawable(MainActivity.this, ids[1]),
+                                user.getUserName(), user.getUserDescription(), user.getHeartNum());
+                        Toast.makeText(MainActivity.this, "설명: " + user.getUserDescription(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(MainActivity.this, "그룹 내 유저 목록 실패", Toast.LENGTH_SHORT).show();

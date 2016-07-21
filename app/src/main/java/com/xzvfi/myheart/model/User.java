@@ -7,15 +7,17 @@ import java.io.Serializable;
  */
 public class User implements Serializable{
     String user_name;
-    String token;
+    String user_social_token;
+    String user_description;
     int user_group;
-    int heart_num;
+    int user_heart_num;
 
-    public User(String user_name, String token, int user_group, int heart_num) {
+    public User(String user_name, String user_social_token, String user_description, int user_group, int user_heart_num) {
         this.user_name = user_name;
-        this.token = token;
+        this.user_social_token = user_social_token;
+        this.user_description = user_description;
         this.user_group = user_group;
-        this.heart_num = heart_num;
+        this.user_heart_num = user_heart_num;
     }
 
     public String getUserName() {
@@ -27,11 +29,11 @@ public class User implements Serializable{
     }
 
     public String getToken() {
-        return token;
+        return user_social_token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setToken(String user_social_token) {
+        this.user_social_token = user_social_token;
     }
 
     public int getUserGroup() {
@@ -43,10 +45,18 @@ public class User implements Serializable{
     }
 
     public int getHeartNum() {
-        return heart_num;
+        return user_heart_num;
     }
 
-    public void setHeartNum(int heart_num) {
-        this.heart_num = heart_num;
+    public void setHeartNum(int user_heart_num) {
+        this.user_heart_num = user_heart_num;
+    }
+
+    public String getUserDescription() {
+        return user_description;
+    }
+
+    public void setUserDescription(String user_description) {
+        this.user_description = user_description;
     }
 }

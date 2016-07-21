@@ -1,19 +1,21 @@
 package com.xzvfi.myheart.model;
 
+import java.io.Serializable;
+
 /**
  * Created by xzvfi on 2016-07-15.
  */
-public class Group {
+public class Group implements Serializable {
     private int id;
     private String group_name;
     private int group_user_num;
-    private boolean group_activated;
+    private int group_activated;
 
     public Group(int id, String group_name, int group_user_num) {
         this.id = id;
         this.group_name = group_name;
         this.group_user_num = group_user_num;
-        this.group_activated = true;
+        this.group_activated = 1;
     }
 
     public int getId() {
@@ -40,11 +42,11 @@ public class Group {
         this.group_user_num = user_num;
     }
 
-    public boolean isGroupActivated() {
+    public int isGroupActivated() {
         return group_activated;
     }
 
-    public void setGroupActivated(boolean group_activated) {
+    public void setGroupActivated(int group_activated) {
         this.group_activated = group_activated;
     }
 }
