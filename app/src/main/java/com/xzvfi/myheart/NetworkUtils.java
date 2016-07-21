@@ -155,20 +155,25 @@ public class NetworkUtils {
 
     public static int getGroupId(Context context) {
         DhcpInfo d = ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getDhcpInfo();
-        int mask = 0;
+        long mask = 0L;
         for (int i = 0; i < 4; ++i) {
-            mask += (((d.netmask >> 8 * i) & 0xFF) << (24 - 8 * i));
+            mask += ((((long)d.netmask >> 8L * i) & 0xFF) << (24 - 8 * i));
         }
+
+        int rem = (int)(~mask);
+        int rightCounter = 1;
+        while((rem = rem>>1) != 1) rightCounter++;
+
 
         String ipStr = getPublicIP();
         String[] ips = ipStr.split("\\.");
 
-        int ip = 0;
+        long ip = 0L;
         for (int i = 0; i < ips.length; ++i) {
-            ip += (Integer.valueOf(ips[i]) << (24 - 8 * i));
+            ip += ((long)Integer.valueOf(ips[i]) << (24 - 8 * i));
         }
 
-        return ip & mask;
+        return (int)((ip & mask) >> rightCounter);
     }
 
     public static String num2String(int num) {

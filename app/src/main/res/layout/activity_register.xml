@@ -58,7 +58,8 @@
                 android:ems="10"
                 android:id="@+id/userNameEditText"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:maxLength="32" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -79,7 +80,8 @@
                 android:ems="10"
                 android:id="@+id/descriptionEditText"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:maxLength="32" />
 
         </RelativeLayout>
 

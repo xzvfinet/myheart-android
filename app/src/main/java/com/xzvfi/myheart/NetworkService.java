@@ -18,14 +18,14 @@ import retrofit2.http.Path;
  * Created by xzvfi on 2016-07-15.
  */
 public interface NetworkService {
-    String SERVER_IP = "http://172.16.101.181:3000/";
+    String SERVER_IP = "http://192.168.0.3:3000/";
 
     // USER
-    @POST("/user/{token}")
-    Call<User> createUser(@Path("token") String token, @Body User user);
+    @POST("/user/{user_id}")
+    Call<User> createUser(@Path("user_id") String user_id, @Body User user);
 
-    @GET("/user/{token}")
-    Call<User> getUser(@Path("token") String token);
+    @GET("/user/{user_id}")
+    Call<User> getUser(@Path("user_id") String user_id);
 
 //    @PUT("/user/{token}")
 //    Call<Boolean> updateUser(@Path("token") String token, @Body User user);
@@ -46,8 +46,8 @@ public interface NetworkService {
 //    @DELETE("/group/{group_id}")
 //    Call<Boolean> removeGroup(@Path("group_id") String group_id);
 
-    @GET("/group/{group_id}/users")
-    Call<List<User>> getUsers(@Path("group_id") int group_id);
+    @GET("/group/{group_id}/users/{except_id}")
+    Call<List<User>> getUsers(@Path("group_id") int group_id, @Path("except_id") String except_id);
 
     @POST("/heart")
     Call<Heart> sendHeart(@Body Heart heart);

@@ -31,7 +31,7 @@ public class AuthActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-//        access(accessToken);
+        access(accessToken);
     }
 
     @Override
@@ -61,10 +61,12 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void moveToRegister() {
-        String token = AccessToken.getCurrentAccessToken().getToken();
-        Toast.makeText(this, "페이스북 인증 성공. 정보를 추가로 입력해주세요! " + token, Toast.LENGTH_SHORT).show();
+        String user_id = AccessToken.getCurrentAccessToken().getUserId();
+        String user_token = AccessToken.getCurrentAccessToken().getToken();
+        Toast.makeText(this, "페이스북 인증 성공. 정보를 추가로 입력해주세요! " + user_id, Toast.LENGTH_SHORT).show();
         Intent registerIntent = new Intent(AuthActivity.this, RegisterActivity.class);
-        registerIntent.putExtra("token", token);
+        registerIntent.putExtra("user_id", user_id);
+        registerIntent.putExtra("user_token", user_token);
         startActivity(registerIntent);
         finish();
     }
@@ -82,7 +84,7 @@ public class AuthActivity extends AppCompatActivity {
         @Override
         public void onSuccess(final LoginResult loginResult) {
             Toast.makeText(AuthActivity.this, "User Id: " + loginResult.getAccessToken().getUserId(), Toast.LENGTH_SHORT).show();
-//            access(loginResult.getAccessToken());
+            access(loginResult.getAccessToken());
         }
 
         @Override
@@ -106,7 +108,8 @@ public class AuthActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "페이스북 로그인 토큰을 받아오는데 성공했습니다. 서버로 보냅니다.", Toast.LENGTH_SHORT).show();
 
             String token = accessToken.getToken();
-            Call<User> call = Singleton.getNetworkService().getUser(token);
+            String id = accessToken.getUserId();
+            Call<User> call = Singleton.getNetworkService().getUser(id);
             call.enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {

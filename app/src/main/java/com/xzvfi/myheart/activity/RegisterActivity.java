@@ -35,7 +35,8 @@ import retrofit2.Response;
 public class RegisterActivity extends AppCompatActivity {
     private final String TAG = "RegisterActivity";
 
-    private String token;
+    private String user_id;
+    private String user_token;
 
     private int group_id;
     private User user;
@@ -53,13 +54,20 @@ public class RegisterActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 2;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        counter = 0;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
         Intent intent = getIntent();
-        token = intent.getStringExtra("token");
-        Toast.makeText(RegisterActivity.this, "token: " + token, Toast.LENGTH_SHORT).show();
+        user_id = intent.getStringExtra("user_id");
+        user_token = intent.getStringExtra("user_token");
+        Toast.makeText(RegisterActivity.this, "user_id: " + user_id, Toast.LENGTH_SHORT).show();
 
         setTitle("새로 가입");
 
@@ -183,9 +191,9 @@ public class RegisterActivity extends AppCompatActivity {
 
             Group group = new Group(group_id, groupName, 1);
 
-            User user = new User(userName, token, description, group_id, 0);
+            User user = new User(user_id, userName, user_token, description, group_id, 0);
 
-            Call<User> userCreateCall = Singleton.getNetworkService().createUser(token, user);
+            Call<User> userCreateCall = Singleton.getNetworkService().createUser(user_id, user);
             Call<Group> groupCreateCall = Singleton.getNetworkService().createGroup(group_id, group);
 
             if (groupNameEditText.isFocusable()) {

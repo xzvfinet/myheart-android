@@ -6,18 +6,28 @@ import java.io.Serializable;
  * Created by xzvfi on 2016-07-15.
  */
 public class User implements Serializable{
+    String user_id;
     String user_name;
-    String user_social_token;
+    String user_token;
     String user_description;
     int user_group;
     int user_heart_num;
 
-    public User(String user_name, String user_social_token, String user_description, int user_group, int user_heart_num) {
+    public User(String user_id, String user_name, String user_token, String user_description, int user_group, int user_heart_num) {
+        this.user_id = user_id;
         this.user_name = user_name;
-        this.user_social_token = user_social_token;
+        this.user_token = user_token;
         this.user_description = user_description;
         this.user_group = user_group;
         this.user_heart_num = user_heart_num;
+    }
+
+    public String getUserId() {
+        return user_id;
+    }
+
+    public void setUserId(String user_id) {
+        this.user_id = user_id;
     }
 
     public String getUserName() {
@@ -29,11 +39,11 @@ public class User implements Serializable{
     }
 
     public String getToken() {
-        return user_social_token;
+        return user_token;
     }
 
-    public void setToken(String user_social_token) {
-        this.user_social_token = user_social_token;
+    public void setToken(String user_token) {
+        this.user_token = user_token;
     }
 
     public int getUserGroup() {

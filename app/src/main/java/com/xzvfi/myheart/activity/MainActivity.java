@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Group group = (Group) intent.getSerializableExtra("group");
 
-        setTitle("같은 그룹(" + group.getName() + ") 친구 목록");
+        setTitle("같은 그룹(" + group.getName() + ") 유저 목록");
 
         ListView listview;
         final StrangerListViewAdapter adapter = new StrangerListViewAdapter();
@@ -51,15 +51,14 @@ public class MainActivity extends AppCompatActivity {
 
         User registeredUser = (User) intent.getSerializableExtra("user");
 
-        Call<List<User>> userList = Singleton.getNetworkService().getUsers(registeredUser.getUserGroup());
+        Call<List<User>> userList = Singleton.getNetworkService().getUsers(registeredUser.getUserGroup(), registeredUser.getUserId());
         userList.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
                     for (User user : response.body()) {
-                        adapter.addItem(user.getToken(), ContextCompat.getDrawable(MainActivity.this, ids[1]),
+                        adapter.addItem(user.getUserId(), ContextCompat.getDrawable(MainActivity.this, ids[1]),
                                 user.getUserName(), user.getUserDescription(), user.getHeartNum());
-                        Toast.makeText(MainActivity.this, "설명: " + user.getUserDescription(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(MainActivity.this, "그룹 내 유저 목록 실패", Toast.LENGTH_SHORT).show();
