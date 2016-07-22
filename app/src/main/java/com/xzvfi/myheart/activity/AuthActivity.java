@@ -44,7 +44,6 @@ public class AuthActivity extends AppCompatActivity {
 
         final LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         if (loginButton != null) {
-//            loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_friends"));
             loginButton.registerCallback(callbackManager, loginResultFacebookCallback);
         }
     }
@@ -105,8 +104,6 @@ public class AuthActivity extends AppCompatActivity {
         } else if (accessToken.isExpired()) {
             Toast.makeText(AuthActivity.this, "Token 이 만료되었습니다. 재 인증 해주세요.", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getApplicationContext(), "페이스북 로그인 토큰을 받아오는데 성공했습니다. 서버로 보냅니다.", Toast.LENGTH_SHORT).show();
-
             String token = accessToken.getToken();
             String id = accessToken.getUserId();
             Call<User> call = Singleton.getNetworkService().getUser(id);
@@ -116,7 +113,6 @@ public class AuthActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         // 기존 유저
                         final User user = response.body();
-                        Toast.makeText(getApplicationContext(), "기존 유저:" + user.getUserName(), Toast.LENGTH_SHORT).show();
 
                         Call<Group> groupCall = Singleton.getNetworkService().getGroup(user.getUserGroup());
                         groupCall.enqueue(new Callback<Group>() {

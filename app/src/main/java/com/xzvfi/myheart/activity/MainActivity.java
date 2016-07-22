@@ -34,6 +34,26 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.tzu_yu
     };
 
+    final String[] names = {
+            "이정연",
+            "김세정",
+            "서현진",
+            "이성경",
+            "박소담",
+            "이수민",
+            "쯔위"
+    };
+
+    final String[] desc = {
+            "안녕하세요!",
+            "테스트를 위한 사람들입니다.",
+            "DB에는 존재하지 않기 때문에 ",
+            "하트를 보내도 저장이 되지 않아요.",
+            "아래부터 새로운 사람들이",
+            "추가된답니다.",
+            "감사합니다!"
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
                     for (User user : response.body()) {
-                        adapter.addItem(user.getUserId(), ContextCompat.getDrawable(MainActivity.this, ids[1]),
+                        adapter.addItem(user.getUserId(), ContextCompat.getDrawable(MainActivity.this, R.drawable.person),
                                 user.getUserName(), user.getUserDescription(), user.getHeartNum());
                     }
                 } else {
@@ -67,23 +87,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-
+                Toast.makeText(MainActivity.this, "서버와 연결 실패. 어플을 재실행해주세요", Toast.LENGTH_LONG).show();
             }
         });
 
-//        final String[] names = {
-//                "이정연",
-//                "김세정",
-//                "서현진",
-//                "이성경",
-//                "박소담",
-//                "이수민",
-//                "쯔위"
-//        };
-//
-//        for (int i = 0; i < ids.length; ++i) {
-//            adapter.addItem(ContextCompat.getDrawable(this, ids[i]),
-//                    names[i], "Assignment Ind Black 36dp");
-//        }
+        for (int i = 0; i < ids.length; ++i) {
+            adapter.addItem("merong", ContextCompat.getDrawable(this, ids[i]), names[i], desc[i], 999);
+        }
     }
 }

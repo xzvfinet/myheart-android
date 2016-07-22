@@ -64,7 +64,6 @@ public class StrangerListViewAdapter extends BaseAdapter {
         TextView descTextView = (TextView) convertView.findViewById(R.id.descriptionTextView);
         TextView heartNumTextView = (TextView) convertView.findViewById(R.id.heartNumTextView);
         ImageButton heartButton = (ImageButton) convertView.findViewById(R.id.heartButton);
-        ImageButton friendButton = (ImageButton) convertView.findViewById(R.id.friendButton);
 
         final StrangerListItem listViewItem = itemList.get(position);
 

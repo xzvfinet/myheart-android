@@ -2,4 +2,7 @@
     <string name="app_name">My Heart</string>
     <string name="facebook_app_id">1738745233070746</string>
     <string name="app_description">네트워크 환경(IP)을 분석하여 같은 망 내 사람들이 그룹 내에서 소통할 수 있게 해주는 어플리케이션</string>
+    <string name="registering_message_ready">InstanceID 토큰 가져오기</string>
+    <string name="registering_message_generating">InstanceID 토큰 생성중...</string>
+    <string name="registering_message_complete">완료!</string>
 </resources>

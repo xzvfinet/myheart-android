@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "555178584849",
+    "project_id": "myheart-af1d5"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555178584849:android:4f86276ef994c808",
+        "android_client_info": {
+          "package_name": "com.xzvfi.myheart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMrH4Z4u1QPD8muHkb-cgZq2NvGBLrybo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
